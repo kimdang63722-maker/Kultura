@@ -16,6 +16,16 @@ export default function App() {
   const [currentHash, setCurrentHash] = useState(window.location.hash);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
+  // Get current year and season
+  const getCurrentYear = () => new Date().getFullYear();
+  const getCurrentSeason = () => {
+    const month = new Date().getMonth() + 1; // getMonth() returns 0-11
+    if (month >= 3 && month <= 5) return 'весенний';
+    if (month >= 6 && month <= 8) return 'летний';
+    if (month >= 9 && month <= 11) return 'осенний';
+    return 'зимний';
+  };
+
   // Simple Hash Router effect
   useEffect(() => {
     const handleHashChange = () => {
@@ -378,7 +388,7 @@ export default function App() {
                       </div>
                     </div>
                     <div className="mt-8 md:mt-0 text-xs text-slate-500">
-                      © 2025 Культура Метров
+                      © {getCurrentYear()} Культура Метров
                     </div>
                   </div>
                   
@@ -423,7 +433,7 @@ export default function App() {
               <p>
                 Информация на сайте носит справочный характер и не является публичной офертой (ст. 437 ГК РФ).
               </p>
-              <p>Цены актуальны на весенний сезон 2025 года.</p>
+              <p>Цены актуальны на {getCurrentSeason()} сезон {getCurrentYear()} года.</p>
               <a href="#privacy" className="underline hover:text-slate-900 transition-colors">Политика конфиденциальности</a>
             </div>
           </div>
