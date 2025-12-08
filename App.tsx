@@ -14,6 +14,7 @@ export default function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [currentHash, setCurrentHash] = useState(window.location.hash);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   // Simple Hash Router effect
   useEffect(() => {
@@ -332,10 +333,10 @@ export default function App() {
                   <div className="space-y-2">
                     {faqData.map((item, i) => (
                       <div key={i} className="border rounded-lg px-4 bg-slate-50/50">
-                        <AccordionItem 
-                          title={item.q} 
-                          isOpen={false} // Controlled by internal state in AccordionItem for simplicity in this demo
-                          onToggle={() => {}} // Internal
+                        <AccordionItem
+                          title={item.q}
+                          isOpen={openFaqIndex === i}
+                          onToggle={() => setOpenFaqIndex(openFaqIndex === i ? null : i)}
                         >
                           {item.a}
                         </AccordionItem>
