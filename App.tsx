@@ -17,6 +17,9 @@ export default function App() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [estimateModalOpen, setEstimateModalOpen] = useState(false);
   const [engineerModalOpen, setEngineerModalOpen] = useState(false);
+  const [contactFormPhone, setContactFormPhone] = useState('');
+  const [contactFormName, setContactFormName] = useState('');
+  const [contactFormSubmitted, setContactFormSubmitted] = useState(false);
 
   // Get current year and season
   const getCurrentYear = () => new Date().getFullYear();
@@ -79,6 +82,58 @@ export default function App() {
       scrollToSection(href);
     }
     setIsMobileMenuOpen(false);
+  };
+
+  // Phone mask formatter
+  const formatPhoneNumber = (value: string) => {
+    // Remove all non-digits
+    const digits = value.replace(/\D/g, '');
+
+    // Start with +7
+    if (digits.length === 0) return '+7 ';
+
+    // Format: +7 (XXX) XXX-XX-XX
+    let formatted = '+7 ';
+    if (digits.length > 1) {
+      formatted += '(' + digits.substring(1, 4);
+    }
+    if (digits.length >= 5) {
+      formatted += ') ' + digits.substring(4, 7);
+    }
+    if (digits.length >= 8) {
+      formatted += '-' + digits.substring(7, 9);
+    }
+    if (digits.length >= 10) {
+      formatted += '-' + digits.substring(9, 11);
+    }
+
+    return formatted;
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value;
+    const formatted = formatPhoneNumber(input);
+    setContactFormPhone(formatted);
+  };
+
+  const handleContactFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Simple validation
+    if (!contactFormName.trim() || contactFormPhone.length < 18) {
+      alert('Пожалуйста, заполните все поля корректно');
+      return;
+    }
+
+    // Show success message
+    setContactFormSubmitted(true);
+
+    // Reset form after 3 seconds
+    setTimeout(() => {
+      setContactFormSubmitted(false);
+      setContactFormName('');
+      setContactFormPhone('+7 ');
+    }, 3000);
   };
 
   const portfolioImages = [
@@ -418,14 +473,50 @@ export default function App() {
                   </div>
                   
                   <div className="p-8 md:p-12 md:w-1/2">
-                    <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+                    {contactFormSubmitted ? (
+                      <div className="flex flex-col items-center justify-center h-full py-12">
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-4"
+                        >
+                          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </motion.div>
+                        <h3 className="text-2xl font-bold mb-2">Спасибо!</h3>
+                        <p className="text-slate-600 text-center">
+                          Мы получили вашу заявку и свяжемся с вами в ближайшее время.
+                        </p>
+                      </div>
+                    ) : (
+                      <form className="space-y-4" onSubmit={handleContactFormSubmit}>
                         <div>
                           <label className="text-sm font-medium mb-1 block">Ваше имя</label>
-                          <Input placeholder="Иван" className="bg-slate-50" />
+                          <Input
+                            placeholder="Иван"
+                            className="bg-slate-50"
+                            value={contactFormName}
+                            onChange={(e) => setContactFormName(e.target.value)}
+                          />
                         </div>
                         <div>
                           <label className="text-sm font-medium mb-1 block">Телефон</label>
-                          <Input placeholder="+7 (999) 000-00-00" className="bg-slate-50" />
+                          <Input
+                            placeholder="+7 (999) 000-00-00"
+                            className="bg-slate-50"
+                            value={contactFormPhone || '+7 '}
+                            onChange={handlePhoneChange}
+                            onFocus={(e) => {
+                              if (!contactFormPhone) {
+                                setContactFormPhone('+7 ');
+                              }
+                              // Move cursor after +7
+                              setTimeout(() => {
+                                e.target.setSelectionRange(3, 3);
+                              }, 0);
+                            }}
+                          />
                         </div>
                         <div className="flex items-start gap-2 pt-2">
                           <input type="checkbox" id="policy" className="mt-1" defaultChecked />
@@ -434,12 +525,13 @@ export default function App() {
                           </label>
                         </div>
                         <Button
-                          onClick={() => setEngineerModalOpen(true)}
+                          type="submit"
                           className="w-full bg-construction hover:bg-construction/90 text-white mt-2"
                         >
                           Вызвать инженера
                         </Button>
-                    </form>
+                      </form>
+                    )}
                   </div>
                 </div>
               </div>

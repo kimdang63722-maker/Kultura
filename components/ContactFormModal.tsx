@@ -46,11 +46,9 @@ export const ContactFormModal: React.FC<ContactFormModalProps> = ({ isOpen, onCl
       newErrors.name = 'Введите ваше имя';
     }
 
-    const phoneRegex = /^[\d\s\+\-\(\)]{10,}$/;
-    if (!formData.phone.trim()) {
-      newErrors.phone = 'Введите номер телефона';
-    } else if (!phoneRegex.test(formData.phone.replace(/\s/g, ''))) {
-      newErrors.phone = 'Некорректный номер телефона';
+    // Check for complete phone number format: +7 (XXX) XXX-XX-XX
+    if (!formData.phone.trim() || formData.phone.length < 18) {
+      newErrors.phone = 'Введите номер телефона полностью';
     }
 
     if (formType === 'estimate' && formData.area && isNaN(Number(formData.area))) {
@@ -85,8 +83,36 @@ export const ContactFormModal: React.FC<ContactFormModalProps> = ({ isOpen, onCl
     onClose();
   };
 
+  // Phone mask formatter
+  const formatPhoneNumber = (value: string) => {
+    // Remove all non-digits
+    const digits = value.replace(/\D/g, '');
+
+    // Start with +7
+    if (digits.length === 0) return '+7 ';
+
+    // Format: +7 (XXX) XXX-XX-XX
+    let formatted = '+7 ';
+    if (digits.length > 1) {
+      formatted += '(' + digits.substring(1, 4);
+    }
+    if (digits.length >= 5) {
+      formatted += ') ' + digits.substring(4, 7);
+    }
+    if (digits.length >= 8) {
+      formatted += '-' + digits.substring(7, 9);
+    }
+    if (digits.length >= 10) {
+      formatted += '-' + digits.substring(9, 11);
+    }
+
+    return formatted;
+  };
+
   const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    // Apply phone mask for phone field
+    const finalValue = field === 'phone' ? formatPhoneNumber(value) : value;
+    setFormData(prev => ({ ...prev, [field]: finalValue }));
     // Очищаем ошибку при изменении поля
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
@@ -136,8 +162,17 @@ export const ContactFormModal: React.FC<ContactFormModalProps> = ({ isOpen, onCl
                   id="phone"
                   type="tel"
                   placeholder="+7 (999) 123-45-67"
-                  value={formData.phone}
+                  value={formData.phone || '+7 '}
                   onChange={(e) => handleChange('phone', e.target.value)}
+                  onFocus={(e) => {
+                    if (!formData.phone) {
+                      setFormData(prev => ({ ...prev, phone: '+7 ' }));
+                    }
+                    // Move cursor after +7
+                    setTimeout(() => {
+                      e.target.setSelectionRange(3, 3);
+                    }, 0);
+                  }}
                   className={errors.phone ? 'border-red-500 focus:ring-red-500' : ''}
                 />
                 {errors.phone && (
