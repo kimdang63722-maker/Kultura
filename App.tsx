@@ -307,7 +307,7 @@ export default function App() {
                         Посмотрите на качество сборки щитов, коллекторных узлов и примыканий.
                       </p>
                     </div>
-                    <Button variant="outline" className="border-slate-700 text-slate-200 hover:bg-slate-800 hover:text-white">
+                    <Button variant="outline" className="bg-transparent border-slate-600 text-slate-200 hover:bg-slate-800 hover:text-white hover:border-slate-700">
                       Все проекты
                     </Button>
                 </div>
