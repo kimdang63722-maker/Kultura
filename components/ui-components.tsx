@@ -241,11 +241,11 @@ export const Dialog: React.FC<DialogProps> = ({ isOpen, onClose, children }) => 
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 z-[9998] bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-[99998] bg-black/80 backdrop-blur-sm"
             style={{ userSelect: 'none' }}
           />
           {/* Modal content - centered with highest z-index */}
-          <div className="fixed inset-0 z-[9999] overflow-y-auto">
+          <div className="fixed inset-0 z-[99999] overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
