@@ -7,6 +7,7 @@ import { Calculator } from './components/Calculator';
 import { PriceList } from './components/PriceList';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
 import { NotFound } from './components/NotFound';
+import { ContactFormModal } from './components/ContactFormModal';
 import { motion } from 'framer-motion';
 
 export default function App() {
@@ -14,6 +15,8 @@ export default function App() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [currentHash, setCurrentHash] = useState(window.location.hash);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [estimateModalOpen, setEstimateModalOpen] = useState(false);
+  const [engineerModalOpen, setEngineerModalOpen] = useState(false);
 
   // Get current year and season
   const getCurrentYear = () => new Date().getFullYear();
@@ -155,19 +158,12 @@ export default function App() {
           </nav>
 
           <div className="hidden md:block">
-            <a
-              href="#prices"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToSection('#prices');
-              }}
+            <Button
+              onClick={() => setEstimateModalOpen(true)}
+              className="bg-slate-900 text-white hover:bg-construction transition-colors duration-300 shadow-md hover:shadow-lg"
             >
-              <Button
-                className="bg-slate-900 text-white hover:bg-construction transition-colors duration-300 shadow-md hover:shadow-lg"
-              >
-                Рассчитать стоимость
-              </Button>
-            </a>
+              Рассчитать стоимость
+            </Button>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -194,19 +190,15 @@ export default function App() {
             ))}
           </nav>
           <div className="mt-auto">
-             <a
-                href="#prices"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection('#prices');
-                  setIsMobileMenuOpen(false);
-                }}
-                className="block"
+             <Button
+               onClick={() => {
+                 setEstimateModalOpen(true);
+                 setIsMobileMenuOpen(false);
+               }}
+               className="w-full mb-4 bg-slate-900 hover:bg-construction transition-colors"
              >
-               <Button className="w-full mb-4 bg-slate-900 hover:bg-construction transition-colors">
-                  Рассчитать стоимость
-               </Button>
-             </a>
+               Рассчитать стоимость
+             </Button>
              <p className="text-sm text-slate-500 text-center">+7 (495) 000-00-00</p>
           </div>
         </div>
@@ -235,20 +227,13 @@ export default function App() {
                     Никаких скрытых доплат и «раздувания» сметы.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4">
-                    <a
-                      href="#prices"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        scrollToSection('#prices');
-                      }}
+                    <Button
+                      onClick={() => setEstimateModalOpen(true)}
+                      size="lg"
+                      className="w-full sm:w-auto text-lg h-12 px-8 bg-slate-900 text-white hover:bg-construction transition-colors duration-300 shadow-lg"
                     >
-                      <Button
-                        size="lg"
-                        className="w-full sm:w-auto text-lg h-12 px-8 bg-slate-900 text-white hover:bg-construction transition-colors duration-300 shadow-lg"
-                      >
-                        Рассчитать стоимость
-                      </Button>
-                    </a>
+                      Рассчитать стоимость
+                    </Button>
                     <a
                       href="#portfolio"
                       onClick={(e) => {
@@ -448,7 +433,10 @@ export default function App() {
                             Нажимая кнопку, я даю согласие на обработку персональных данных согласно <a href="#privacy" className="underline hover:text-slate-800">Политике конфиденциальности</a>.
                           </label>
                         </div>
-                        <Button className="w-full bg-construction hover:bg-construction/90 text-white mt-2">
+                        <Button
+                          onClick={() => setEngineerModalOpen(true)}
+                          className="w-full bg-construction hover:bg-construction/90 text-white mt-2"
+                        >
                           Вызвать инженера
                         </Button>
                     </form>
@@ -504,6 +492,18 @@ export default function App() {
           </div>
         )}
       </Dialog>
+
+      {/* --- CONTACT FORM MODALS --- */}
+      <ContactFormModal
+        isOpen={estimateModalOpen}
+        onClose={() => setEstimateModalOpen(false)}
+        formType="estimate"
+      />
+      <ContactFormModal
+        isOpen={engineerModalOpen}
+        onClose={() => setEngineerModalOpen(false)}
+        formType="engineer"
+      />
 
     </div>
   );
