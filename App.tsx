@@ -45,7 +45,6 @@ export default function App() {
   const navLinks = [
     { name: 'Преимущества', href: '#features' },
     { name: 'Цены', href: '#prices' },
-    { name: 'Калькулятор', href: '#calculator' },
     { name: 'Портфолио', href: '#portfolio' },
     { name: 'FAQ', href: '#faq' },
   ];
@@ -136,8 +135,8 @@ export default function App() {
           </nav>
 
           <div className="hidden md:block">
-            <a href={isLandingPage ? '#calculator' : '/#calculator'}>
-              <Button 
+            <a href={isLandingPage ? '#prices' : '/#prices'}>
+              <Button
                 className="bg-slate-900 text-white hover:bg-construction transition-colors duration-300 shadow-md hover:shadow-lg"
               >
                 Рассчитать стоимость
@@ -169,8 +168,8 @@ export default function App() {
             ))}
           </nav>
           <div className="mt-auto">
-             <a 
-                href={isLandingPage ? '#calculator' : '/#calculator'}
+             <a
+                href={isLandingPage ? '#prices' : '/#prices'}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="block"
              >
@@ -206,9 +205,9 @@ export default function App() {
                     Никаких скрытых доплат и «раздувания» сметы.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4">
-                    <a href="#calculator">
-                      <Button 
-                        size="lg" 
+                    <a href="#prices">
+                      <Button
+                        size="lg"
                         className="w-full sm:w-auto text-lg h-12 px-8 bg-slate-900 text-white hover:bg-construction transition-colors duration-300 shadow-lg"
                       >
                         Рассчитать стоимость
