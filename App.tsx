@@ -49,11 +49,31 @@ export default function App() {
     { name: 'FAQ', href: '#faq' },
   ];
 
-  // Helper to handle navigation when on a sub-page
-  const handleNavClick = (href: string) => {
+  // Smooth scroll to section without changing URL
+  const scrollToSection = (sectionId: string) => {
+    const element = document.querySelector(sectionId);
+    if (element) {
+      const headerOffset = 80; // Height of sticky header
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Helper to handle navigation
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+
     if (currentHash === '#privacy' || currentHash === '#404') {
       // If we are on a subpage, we need to force navigation to root + hash
       window.location.href = '/' + href;
+    } else {
+      // Smooth scroll without changing URL
+      scrollToSection(href);
     }
     setIsMobileMenuOpen(false);
   };
@@ -123,10 +143,10 @@ export default function App() {
           {/* Desktop Nav */}
           <nav className="hidden md:flex gap-8 text-sm font-medium">
             {navLinks.map(link => (
-              <a 
-                key={link.name} 
-                href={link.href} 
-                onClick={() => handleNavClick(link.href)}
+              <a
+                key={link.name}
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
                 className="text-slate-600 hover:text-slate-900 transition-colors"
               >
                 {link.name}
@@ -135,7 +155,13 @@ export default function App() {
           </nav>
 
           <div className="hidden md:block">
-            <a href={isLandingPage ? '#prices' : '/#prices'}>
+            <a
+              href="#prices"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection('#prices');
+              }}
+            >
               <Button
                 className="bg-slate-900 text-white hover:bg-construction transition-colors duration-300 shadow-md hover:shadow-lg"
               >
@@ -157,11 +183,11 @@ export default function App() {
            <div className="text-xl font-bold">Меню</div>
            <nav className="flex flex-col gap-6 text-lg">
             {navLinks.map(link => (
-              <a 
-                key={link.name} 
-                href={link.href} 
+              <a
+                key={link.name}
+                href={link.href}
                 className="font-medium hover:text-construction transition-colors"
-                onClick={() => handleNavClick(link.href)}
+                onClick={(e) => handleNavClick(e, link.href)}
               >
                 {link.name}
               </a>
@@ -169,8 +195,12 @@ export default function App() {
           </nav>
           <div className="mt-auto">
              <a
-                href={isLandingPage ? '#prices' : '/#prices'}
-                onClick={() => setIsMobileMenuOpen(false)}
+                href="#prices"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection('#prices');
+                  setIsMobileMenuOpen(false);
+                }}
                 className="block"
              >
                <Button className="w-full mb-4 bg-slate-900 hover:bg-construction transition-colors">
@@ -205,7 +235,13 @@ export default function App() {
                     Никаких скрытых доплат и «раздувания» сметы.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4">
-                    <a href="#prices">
+                    <a
+                      href="#prices"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        scrollToSection('#prices');
+                      }}
+                    >
                       <Button
                         size="lg"
                         className="w-full sm:w-auto text-lg h-12 px-8 bg-slate-900 text-white hover:bg-construction transition-colors duration-300 shadow-lg"
@@ -213,10 +249,16 @@ export default function App() {
                         Рассчитать стоимость
                       </Button>
                     </a>
-                    <a href="#portfolio">
-                      <Button 
-                        variant="outline" 
-                        size="lg" 
+                    <a
+                      href="#portfolio"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        scrollToSection('#portfolio');
+                      }}
+                    >
+                      <Button
+                        variant="outline"
+                        size="lg"
                         className="w-full sm:w-auto text-lg h-12 px-8 hover:bg-slate-100 transition-colors"
                       >
                         Посмотреть портфолио
