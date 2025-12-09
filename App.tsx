@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  FileText, ShieldCheck, Lock, Settings, Menu, Phone, MessageCircle, X, ChevronRight, Check
+import {
+  FileText, ShieldCheck, Lock, Settings, Menu, Phone, MessageCircle
 } from 'lucide-react';
-import { Button, Input, Sheet, Dialog, AccordionItem, Badge, Card, CardContent } from './components/ui-components';
+import { Button, Input, Sheet, Dialog, AccordionItem } from './components/ui-components';
 import { Calculator } from './components/Calculator';
 import { PriceList } from './components/PriceList';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
 import { NotFound } from './components/NotFound';
-import { cn } from './lib/utils';
 import { motion } from 'framer-motion';
 
 export default function App() {
@@ -284,7 +283,7 @@ export default function App() {
                   {/* Right Column: Price List */}
                   <div className="w-full lg:w-2/3">
                     <div className="mb-8">
-                      <h2 className="text-3xl font-bold tracking-tight mb-4">Прайс-лист 2025</h2>
+                      <h2 className="text-3xl font-bold tracking-tight mb-4">Прайс-лист {getCurrentYear()}</h2>
                       <p className="text-slate-500">
                         Актуальные расценки на строительный сезон. Цены указаны за работу профессиональных бригад с соблюдением СНиП.
                       </p>
