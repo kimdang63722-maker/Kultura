@@ -472,9 +472,9 @@ export default function App() {
                     </div>
                   </div>
                   
-                  <div className="p-8 md:p-12 md:w-1/2">
+                  <div className="p-8 md:p-12 md:w-1/2 min-h-[400px] flex items-center">
                     {contactFormSubmitted ? (
-                      <div className="flex flex-col items-center justify-center h-full py-12">
+                      <div className="flex flex-col items-center justify-center w-full py-12">
                         <motion.div
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
@@ -490,7 +490,7 @@ export default function App() {
                         </p>
                       </div>
                     ) : (
-                      <form className="space-y-4" onSubmit={handleContactFormSubmit}>
+                      <form className="space-y-4 w-full" onSubmit={handleContactFormSubmit}>
                         <div>
                           <label className="text-sm font-medium mb-1 block">Ваше имя</label>
                           <Input

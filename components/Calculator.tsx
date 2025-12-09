@@ -2,8 +2,10 @@ import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, Label, Slider, Switch, Button } from './ui-components';
 import { formatCurrency } from '../lib/utils';
 import { Calculator as CalcIcon, ArrowRight } from 'lucide-react';
+import { ContactFormModal } from './ContactFormModal';
 
 export const Calculator = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // State
   const [area, setArea] = useState<number[]>([45]);
   const [isNewBuild, setIsNewBuild] = useState<boolean>(true); // true = Новостройка, false = Вторичка
@@ -133,7 +135,10 @@ export const Calculator = () => {
                 <span className="font-semibold text-lg">Итого:</span>
                 <span className="font-mono text-2xl font-bold text-orange-500">{formatCurrency(calculateTotal.total)}</span>
             </div>
-            <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white mt-4 h-12 text-lg">
+            <Button
+              onClick={() => setIsModalOpen(true)}
+              className="w-full bg-orange-600 hover:bg-orange-700 text-white mt-4 h-12 text-lg"
+            >
                Заказать смету <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
             <p className="text-[10px] text-center text-slate-400 mt-2">
@@ -141,6 +146,22 @@ export const Calculator = () => {
             </p>
         </div>
       </CardContent>
+
+      <ContactFormModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        formType="calculator"
+        calculatorData={{
+          area: area[0],
+          isNewBuild,
+          hasDesignProject,
+          needsDemolition,
+          totalWork: calculateTotal.work,
+          totalMaterials: calculateTotal.materials,
+          totalDesign: calculateTotal.design,
+          total: calculateTotal.total
+        }}
+      />
     </Card>
   );
 };

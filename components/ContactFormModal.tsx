@@ -4,13 +4,25 @@ import { Button, Input } from './ui-components';
 import { Check, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+interface CalculatorData {
+  area: number;
+  isNewBuild: boolean;
+  hasDesignProject: boolean;
+  needsDemolition: boolean;
+  totalWork: number;
+  totalMaterials: number;
+  totalDesign: number;
+  total: number;
+}
+
 interface ContactFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  formType: 'estimate' | 'engineer';
+  formType: 'estimate' | 'engineer' | 'calculator';
+  calculatorData?: CalculatorData;
 }
 
-export const ContactFormModal: React.FC<ContactFormModalProps> = ({ isOpen, onClose, formType }) => {
+export const ContactFormModal: React.FC<ContactFormModalProps> = ({ isOpen, onClose, formType, calculatorData }) => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -34,6 +46,13 @@ export const ContactFormModal: React.FC<ContactFormModalProps> = ({ isOpen, onCl
       buttonText: 'Вызвать инженера',
       successTitle: 'Инженер вызван!',
       successMessage: 'Менеджер свяжется с вами в ближайшее время для согласования даты и времени выезда.'
+    },
+    calculator: {
+      title: 'Заказать смету',
+      subtitle: 'Ваша конфигурация сохранена. Оставьте контакты и мы отправим детальную смету',
+      buttonText: 'Отправить заявку',
+      successTitle: 'Заявка отправлена!',
+      successMessage: 'Мы получили вашу заявку и свяжемся с вами в ближайшее время с детальной сметой.'
     }
   };
 
@@ -135,6 +154,44 @@ export const ContactFormModal: React.FC<ContactFormModalProps> = ({ isOpen, onCl
               <h2 className="text-2xl font-bold text-slate-900 mb-2">{config.title}</h2>
               <p className="text-slate-600 text-sm">{config.subtitle}</p>
             </div>
+
+            {/* Calculator Configuration Summary */}
+            {formType === 'calculator' && calculatorData && (
+              <div className="mb-6 bg-slate-50 rounded-lg p-4 border border-slate-200">
+                <h3 className="font-semibold text-slate-900 mb-3 text-sm">Ваша конфигурация:</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-slate-600">Площадь:</span>
+                    <span className="font-medium text-slate-900">{calculatorData.area} м²</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-600">Тип жилья:</span>
+                    <span className="font-medium text-slate-900">
+                      {calculatorData.isNewBuild ? 'Новостройка' : 'Вторичное'}
+                    </span>
+                  </div>
+                  {calculatorData.hasDesignProject && (
+                    <div className="flex justify-between">
+                      <span className="text-slate-600">Дизайн-проект:</span>
+                      <span className="font-medium text-green-600">Включен</span>
+                    </div>
+                  )}
+                  {calculatorData.needsDemolition && (
+                    <div className="flex justify-between">
+                      <span className="text-slate-600">Демонтаж:</span>
+                      <span className="font-medium text-green-600">Требуется</span>
+                    </div>
+                  )}
+                  <div className="h-px bg-slate-200 my-2"></div>
+                  <div className="flex justify-between items-center pt-1">
+                    <span className="text-slate-700 font-semibold">Предварительная стоимость:</span>
+                    <span className="font-bold text-lg text-orange-600">
+                      {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(calculatorData.total)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
