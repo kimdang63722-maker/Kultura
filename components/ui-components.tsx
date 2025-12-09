@@ -215,33 +215,57 @@ interface DialogProps {
   children: React.ReactNode;
 }
 export const Dialog: React.FC<DialogProps> = ({ isOpen, onClose, children }) => {
+  // Block body scroll when modal is open
+  React.useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = 'var(--scrollbar-width, 0px)';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    };
+  }, [isOpen]);
+
   return (
     <AnimatePresence>
       {isOpen && (
         <>
+          {/* Overlay - blocks all interactions with background */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-[9998] bg-black/80 backdrop-blur-sm"
+            style={{ userSelect: 'none' }}
           />
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, translate: "-50%, -50%" }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg"
-            style={{ transform: "translate(-50%, -50%)" }} // Override standard translate for explicit positioning
-          >
-            {children}
-            <button
-              onClick={onClose}
-              className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
-            >
-              <X className="h-4 w-4" />
-              <span className="sr-only">Close</span>
-            </button>
-          </motion.div>
+          {/* Modal content - centered with highest z-index */}
+          <div className="fixed inset-0 z-[9999] overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                className="relative w-full max-w-lg rounded-lg border bg-white p-6 shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {children}
+                <button
+                  onClick={onClose}
+                  className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                >
+                  <X className="h-4 w-4" />
+                  <span className="sr-only">Close</span>
+                </button>
+              </motion.div>
+            </div>
+          </div>
         </>
       )}
     </AnimatePresence>
