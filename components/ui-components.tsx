@@ -1,4 +1,5 @@
 import React from "react";
+import { createPortal } from "react-dom";
 import { cn } from "../lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
@@ -213,25 +214,48 @@ interface DialogProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  variant?: 'default' | 'gallery';
 }
-export const Dialog: React.FC<DialogProps> = ({ isOpen, onClose, children }) => {
-  // Block body scroll when modal is open
+export const Dialog: React.FC<DialogProps> = ({ isOpen, onClose, children, variant = 'default' }) => {
+  // Block body scroll and blur root when modal is open
   React.useEffect(() => {
     if (isOpen) {
+      // Prevent scrolling
       document.body.style.overflow = 'hidden';
       document.body.style.paddingRight = 'var(--scrollbar-width, 0px)';
+
+      // Blur and disable root element
+      const root = document.getElementById('root');
+      if (root) {
+        root.style.filter = 'blur(3px)';
+        root.style.pointerEvents = 'none';
+      }
     } else {
+      // Restore everything
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
+
+      const root = document.getElementById('root');
+      if (root) {
+        root.style.filter = '';
+        root.style.pointerEvents = '';
+      }
     }
 
     return () => {
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
+
+      const root = document.getElementById('root');
+      if (root) {
+        root.style.filter = '';
+        root.style.pointerEvents = '';
+      }
     };
   }, [isOpen]);
 
-  return (
+  // Render modal outside root using Portal
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
@@ -252,23 +276,31 @@ export const Dialog: React.FC<DialogProps> = ({ isOpen, onClose, children }) => 
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="relative w-full max-w-lg rounded-lg border bg-white p-6 shadow-2xl"
+                className={cn(
+                  "relative w-full rounded-lg border shadow-2xl",
+                  variant === 'gallery'
+                    ? "max-w-6xl p-0 bg-transparent border-none"
+                    : "max-w-lg p-6 bg-white"
+                )}
                 onClick={(e) => e.stopPropagation()}
               >
                 {children}
-                <button
-                  onClick={onClose}
-                  className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                >
-                  <X className="h-4 w-4" />
-                  <span className="sr-only">Close</span>
-                </button>
+                {variant !== 'gallery' && (
+                  <button
+                    onClick={onClose}
+                    className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  >
+                    <X className="h-4 w-4" />
+                    <span className="sr-only">Close</span>
+                  </button>
+                )}
               </motion.div>
             </div>
           </div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 

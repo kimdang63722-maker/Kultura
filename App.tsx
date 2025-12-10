@@ -8,11 +8,13 @@ import { PriceList } from './components/PriceList';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
 import { NotFound } from './components/NotFound';
 import { ContactFormModal } from './components/ContactFormModal';
+import { ImageGalleryModal } from './components/ImageGalleryModal';
 import { motion } from 'framer-motion';
+import { sendToTelegram } from './src/utils/telegram';
 
 export default function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
   const [currentHash, setCurrentHash] = useState(window.location.hash);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [estimateModalOpen, setEstimateModalOpen] = useState(false);
@@ -116,13 +118,26 @@ export default function App() {
     setContactFormPhone(formatted);
   };
 
-  const handleContactFormSubmit = (e: React.FormEvent) => {
+  const handleContactFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Simple validation
     if (!contactFormName.trim() || contactFormPhone.length < 18) {
       alert('Пожалуйста, заполните все поля корректно');
       return;
+    }
+
+    // Отправка данных в Telegram
+    const success = await sendToTelegram({
+      formType: 'contact',
+      name: contactFormName,
+      phone: contactFormPhone
+    });
+
+    if (success) {
+      console.log('Заявка успешно отправлена в Telegram');
+    } else {
+      console.error('Ошибка отправки в Telegram');
     }
 
     // Show success message
@@ -326,10 +341,10 @@ export default function App() {
                       title: "Технадзор", 
                       desc: "Каждый этап принимает наш штатный инженер технадзора, а не прораб. Мы используем чек-листы из 150 пунктов для приемки работ." 
                     },
-                    { 
-                      icon: Lock, 
-                      title: "Фиксация цены", 
-                      desc: "Стоимость работ фиксируется в договоре. Если мы забыли посчитать розетку при замере — мы установим её за свой счет." 
+                    {
+                      icon: Lock,
+                      title: "Фиксация цены",
+                      desc: "Стоимость работ фиксируется в договоре на основе утвержденного ТЗ. Цена на согласованный объем неизменна, а любые дополнения в процессе ремонта вносятся только через прозрачные доп. соглашения по вашему желанию."
                     },
                     { 
                       icon: Settings, 
@@ -387,18 +402,22 @@ export default function App() {
                         Посмотрите на качество сборки щитов, коллекторных узлов и примыканий.
                       </p>
                     </div>
-                    <Button variant="outline" className="bg-transparent border-slate-600 text-slate-200 hover:bg-slate-800 hover:text-white hover:border-slate-700">
+                    <Button
+                      variant="outline"
+                      className="bg-transparent border-slate-600 text-slate-200 hover:bg-slate-800 hover:text-white hover:border-slate-700"
+                      onClick={() => setSelectedImageIndex(0)}
+                    >
                       Все проекты
                     </Button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {portfolioImages.map((src, idx) => (
-                      <motion.div 
-                        key={idx} 
+                      <motion.div
+                        key={idx}
                         whileHover={{ scale: 1.02 }}
                         className="aspect-[4/3] rounded-lg overflow-hidden bg-slate-800 cursor-pointer relative group"
-                        onClick={() => setSelectedImage(src)}
+                        onClick={() => setSelectedImageIndex(idx)}
                       >
                         <img 
                           src={src} 
@@ -573,17 +592,12 @@ export default function App() {
       </div>
 
       {/* --- PORTFOLIO MODAL --- */}
-      <Dialog isOpen={!!selectedImage} onClose={() => setSelectedImage(null)}>
-        {selectedImage && (
-          <div className="relative">
-            <img src={selectedImage} alt="Portfolio Detail" className="w-full h-auto rounded-md" />
-            <div className="mt-4 text-center">
-              <h3 className="font-bold text-lg">Детализация узла</h3>
-              <p className="text-slate-500 text-sm">Пример реализации инженерного решения.</p>
-            </div>
-          </div>
-        )}
-      </Dialog>
+      <ImageGalleryModal
+        isOpen={selectedImageIndex !== null}
+        onClose={() => setSelectedImageIndex(null)}
+        images={portfolioImages}
+        initialIndex={selectedImageIndex ?? 0}
+      />
 
       {/* --- CONTACT FORM MODALS --- */}
       <ContactFormModal

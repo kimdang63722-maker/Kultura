@@ -3,6 +3,7 @@ import { Dialog } from './ui-components';
 import { Button, Input } from './ui-components';
 import { Check, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { sendToTelegram } from '../src/utils/telegram';
 
 interface CalculatorData {
   area: number;
@@ -35,7 +36,7 @@ export const ContactFormModal: React.FC<ContactFormModalProps> = ({ isOpen, onCl
   const formConfig = {
     estimate: {
       title: 'Рассчитать стоимость ремонта',
-      subtitle: 'Заполните форму и мы пришлем точную смету в течение 2 часов',
+      subtitle: 'Заполните форму и мы свяжемся чтобы уточнить детали',
       buttonText: 'Получить смету',
       successTitle: 'Заявка отправлена!',
       successMessage: 'Наш инженер свяжется с вами в течение 15 минут для уточнения деталей и расчета сметы.'
@@ -49,7 +50,7 @@ export const ContactFormModal: React.FC<ContactFormModalProps> = ({ isOpen, onCl
     },
     calculator: {
       title: 'Заказать смету',
-      subtitle: 'Ваша конфигурация сохранена. Оставьте контакты и мы отправим детальную смету',
+      subtitle: 'Ваша конфигурация сохранена. Оставьте контакты и мы свяжемся чтобы уточнить детали',
       buttonText: 'Отправить заявку',
       successTitle: 'Заявка отправлена!',
       successMessage: 'Мы получили вашу заявку и свяжемся с вами в ближайшее время с детальной сметой.'
@@ -78,14 +79,37 @@ export const ContactFormModal: React.FC<ContactFormModalProps> = ({ isOpen, onCl
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (validateForm()) {
-      // Здесь будет отправка данных на сервер
-      console.log('Form submitted:', { ...formData, formType });
+      // Отправка данных в Telegram
+      const telegramData: any = {
+        formType,
+        name: formData.name,
+        phone: formData.phone,
+        comment: formData.comment
+      };
 
-      // Показываем сообщение об успехе
+      // Добавляем дополнительные данные в зависимости от типа формы
+      if (formType === 'estimate' && formData.area) {
+        telegramData.area = formData.area;
+      }
+
+      if (formType === 'calculator' && calculatorData) {
+        telegramData.calculatorData = calculatorData;
+      }
+
+      // Отправляем в Telegram
+      const success = await sendToTelegram(telegramData);
+
+      if (success) {
+        console.log('Заявка успешно отправлена в Telegram');
+      } else {
+        console.error('Ошибка отправки в Telegram');
+      }
+
+      // Показываем сообщение об успехе в любом случае
       setIsSubmitted(true);
 
       // Сброс формы через 3 секунды и закрытие модального окна
