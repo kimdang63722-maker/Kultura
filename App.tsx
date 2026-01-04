@@ -151,14 +151,9 @@ export default function App() {
     }, 3000);
   };
 
-  const portfolioImages = [
-    "https://picsum.photos/800/600?random=1",
-    "https://picsum.photos/800/600?random=2",
-    "https://picsum.photos/800/600?random=3",
-    "https://picsum.photos/800/600?random=4",
-    "https://picsum.photos/800/600?random=5",
-    "https://picsum.photos/800/600?random=6"
-  ];
+  const portfolioImages = Object.values(
+    import.meta.glob('./src/assets/portfolio/*.{png,jpg,jpeg,svg,webp,PNG,JPG,JPEG}', { eager: true, import: 'default' })
+  ) as string[];
 
   const faqData = [
     {
@@ -269,7 +264,9 @@ export default function App() {
              >
                Рассчитать стоимость
              </Button>
-             <p className="text-sm text-slate-500 text-center">+7 (495) 000-00-00</p>
+             <p className="text-sm text-slate-500 text-center">
+               <a href="tel:+79168354677" className="hover:text-slate-900 transition-colors">+7 (916) 835-46-77</a>
+             </p>
           </div>
         </div>
       </Sheet>
@@ -472,7 +469,9 @@ export default function App() {
                           </div>
                           <div>
                             <div className="text-xs text-slate-400">Телефон</div>
-                            <div className="font-mono font-bold">+7 (495) 123-45-67</div>
+                            <div className="font-mono font-bold">
+                              <a href="tel:+79168354677" className="hover:text-slate-300 transition-colors">+7 (916) 835-46-77</a>
+                            </div>
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
@@ -481,7 +480,9 @@ export default function App() {
                           </div>
                           <div>
                             <div className="text-xs text-slate-400">Мессенджеры</div>
-                            <div className="font-medium">Telegram / WhatsApp</div>
+                            <div className="font-medium">
+                              <a href="https://t.me/culture_metrov" className="hover:text-slate-300 transition-colors">Telegram</a> / <a href="https://wa.me/79168354677" className="hover:text-slate-300 transition-colors">WhatsApp</a>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -581,14 +582,18 @@ export default function App() {
 
       {/* --- MOBILE STICKY FOOTER --- */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t p-4 z-50 flex gap-4 safe-area-bottom">
-        <Button variant="outline" className="flex-1 border-slate-300">
-          <MessageCircle className="w-4 h-4 mr-2" />
-          WhatsApp
-        </Button>
-        <Button className="flex-1 bg-slate-900 text-white">
-          <Phone className="w-4 h-4 mr-2" />
-          Позвонить
-        </Button>
+        <a href="https://wa.me/79168354677" className="flex-1">
+          <Button variant="outline" className="w-full border-slate-300">
+            <MessageCircle className="w-4 h-4 mr-2" />
+            WhatsApp
+          </Button>
+        </a>
+        <a href="tel:+79168354677" className="flex-1">
+          <Button className="w-full bg-slate-900 text-white">
+            <Phone className="w-4 h-4 mr-2" />
+            Позвонить
+          </Button>
+        </a>
       </div>
 
       {/* --- PORTFOLIO MODAL --- */}
