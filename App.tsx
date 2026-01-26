@@ -493,7 +493,7 @@ export default function App() {
                           <div>
                             <div className="text-xs text-slate-400">Мессенджеры</div>
                             <div className="font-medium">
-                              <a href="https://t.me/culture_metrov" className="hover:text-slate-300 transition-colors">Telegram</a> / <a href="https://wa.me/79998312311" className="hover:text-slate-300 transition-colors">WhatsApp</a>
+                              <a href="https://t.me/+79998312311" className="hover:text-slate-300 transition-colors">Telegram</a> / <a href="https://wa.me/79998312311" className="hover:text-slate-300 transition-colors">WhatsApp</a>
                             </div>
                           </div>
                         </div>
