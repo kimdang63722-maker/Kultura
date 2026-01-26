@@ -419,7 +419,13 @@ export default function App() {
                       <motion.div
                         key={idx}
                         whileHover={{ scale: 1.02 }}
-                        className="aspect-[4/3] rounded-lg overflow-hidden bg-slate-800 cursor-pointer relative group"
+                        className={`aspect-[4/3] rounded-lg overflow-hidden bg-slate-800 cursor-pointer relative group ${
+                          idx >= 2 ? 'hidden md:block' : ''
+                        } ${
+                          idx >= 4 ? 'md:hidden lg:block' : ''
+                        } ${
+                          idx >= 6 ? 'lg:hidden' : ''
+                        }`}
                         onClick={() => setSelectedImageIndex(idx)}
                       >
                         <img 
