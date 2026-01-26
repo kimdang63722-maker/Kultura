@@ -37,6 +37,12 @@ export default function App() {
   useEffect(() => {
     const handleHashChange = () => {
       setCurrentHash(window.location.hash);
+      
+      // Yandex Metrika hit tracking for SPA
+      if (typeof (window as any).ym === 'function') {
+        (window as any).ym(106455750, 'hit', window.location.href);
+      }
+
       // Auto-scroll to top if it's a "page" navigation (not a section jump)
       if (window.location.hash === '#privacy' || window.location.hash === '#404') {
         window.scrollTo(0, 0);
@@ -265,7 +271,7 @@ export default function App() {
                Рассчитать стоимость
              </Button>
              <p className="text-sm text-slate-500 text-center">
-               <a href="tel:+79168354677" className="hover:text-slate-900 transition-colors">+7 (916) 835-46-77</a>
+               <a href="tel:+79998312311" className="hover:text-slate-900 transition-colors">+7 (999) 831-23-11</a>
              </p>
           </div>
         </div>
@@ -470,7 +476,7 @@ export default function App() {
                           <div>
                             <div className="text-xs text-slate-400">Телефон</div>
                             <div className="font-mono font-bold">
-                              <a href="tel:+79168354677" className="hover:text-slate-300 transition-colors">+7 (916) 835-46-77</a>
+                              <a href="tel:+79998312311" className="hover:text-slate-300 transition-colors">+7 (999) 831-23-11</a>
                             </div>
                           </div>
                         </div>
@@ -481,7 +487,7 @@ export default function App() {
                           <div>
                             <div className="text-xs text-slate-400">Мессенджеры</div>
                             <div className="font-medium">
-                              <a href="https://t.me/culture_metrov" className="hover:text-slate-300 transition-colors">Telegram</a> / <a href="https://wa.me/79168354677" className="hover:text-slate-300 transition-colors">WhatsApp</a>
+                              <a href="https://t.me/culture_metrov" className="hover:text-slate-300 transition-colors">Telegram</a> / <a href="https://wa.me/79998312311" className="hover:text-slate-300 transition-colors">WhatsApp</a>
                             </div>
                           </div>
                         </div>
@@ -582,13 +588,13 @@ export default function App() {
 
       {/* --- MOBILE STICKY FOOTER --- */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t p-4 z-50 flex gap-4 safe-area-bottom">
-        <a href="https://wa.me/79168354677" className="flex-1">
+        <a href="https://wa.me/79998312311" className="flex-1">
           <Button variant="outline" className="w-full border-slate-300">
             <MessageCircle className="w-4 h-4 mr-2" />
             WhatsApp
           </Button>
         </a>
-        <a href="tel:+79168354677" className="flex-1">
+        <a href="tel:+79998312311" className="flex-1">
           <Button className="w-full bg-slate-900 text-white">
             <Phone className="w-4 h-4 mr-2" />
             Позвонить
