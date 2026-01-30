@@ -7,10 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "telegram-server": "node telegram-server.js",
-    "telegram-server:dev": "nodemon telegram-server.js",
-    "bot:setup": "node scripts/setup-bot.js",
-    "bot:test": "node scripts/test-bot.js"
+    "telegram-server": "node server/telegram-server.js",
+    "telegram-server:dev": "nodemon server/telegram-server.js",
+    "bot:setup": "node server/scripts/setup-bot.js",
+    "bot:test": "node scripts/test-bot.js",
+    "server:test": "node scripts/test-server.js"
   },
   "dependencies": {
     "lucide-react": "^0.556.0",

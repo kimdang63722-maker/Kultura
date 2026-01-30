@@ -1,22 +1,12 @@
-// Telegram Bot Configuration
-// ВАЖНО: В production эти данные должны храниться в переменных окружения (.env)
+// Telegram Bot Configuration (Client-side)
+// Только публичные настройки для клиентского приложения
 export const TELEGRAM_CONFIG = {
-  botToken: '8316857468:AAG_xT7jgeRnTuxQx1m8kpSNuajxCRak154',
+  // Bot username для ссылок (без токена)
+  botUsername: 'your_bot_username',
 
-  // Список ID чатов администраторов и каналов (всегда получают уведомления)
-  // Первый ID - личный чат администратора
-  // Второй ID - канал/группа компании
+  // Список ID чатов администраторов и каналов (для клиентского использования)
   adminChatIds: ['615369157', '-1003806704116'],
 
   // Устаревшее поле - оставлено для обратной совместимости
-  // Теперь используется subscribers.json для хранения подписчиков бота
-  chatIds: ['615369157', '-1003806704116'],
-
-  // Настройки webhook сервера
-  webhook: {
-    // URL для webhook (для production заменить на реальный домен)
-    url: process.env.TELEGRAM_WEBHOOK_URL || 'https://your-domain.com/telegram/webhook',
-    // Порт для локального сервера
-    port: process.env.PORT || 3001
-  }
+  chatIds: ['615369157', '-1003806704116']
 };

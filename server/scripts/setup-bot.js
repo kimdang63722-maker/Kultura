@@ -1,5 +1,5 @@
-import { setWebhook } from '../src/utils/bot-handler.js';
-import { TELEGRAM_CONFIG } from '../src/config/telegram.js';
+import { setWebhook } from '../utils/bot-handler.js';
+import { TELEGRAM_CONFIG } from '../config/telegram.js';
 
 async function setupBot() {
   console.log('🤖 Setting up Telegram bot webhook...');

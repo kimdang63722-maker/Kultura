@@ -1,5 +1,4 @@
 import { TELEGRAM_CONFIG } from '../config/telegram';
-import { getSubscriberChatIds } from './subscribers';
 
 // Типы данных для разных форм
 export interface BaseFormData {
@@ -107,11 +106,9 @@ export const sendToTelegram = async (data: TelegramFormData): Promise<boolean> =
   try {
     const message = formatMessage(data);
 
-    // 1. Получаем список ID подписчиков бота
-    let chatIds = getSubscriberChatIds();
-
-    // 2. Добавляем hardcoded ID из конфига (для администраторов и каналов)
-    chatIds = [...new Set([...chatIds, ...TELEGRAM_CONFIG.chatIds])];
+    // Получаем список ID из конфига (администраторы и каналы)
+    // В будущем здесь можно добавить API вызов к серверу для получения подписчиков
+    const chatIds = [...TELEGRAM_CONFIG.chatIds];
 
     console.log(`Sending notification to ${chatIds.length} recipients`);
     

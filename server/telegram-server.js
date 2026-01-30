@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { handleTelegramUpdate, setWebhook, deleteWebhook } from './src/utils/bot-handler.js';
+import { handleTelegramUpdate, setWebhook, deleteWebhook } from './utils/bot-handler.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;

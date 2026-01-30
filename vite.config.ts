@@ -18,6 +18,18 @@ export default defineConfig(({ mode }) => {
         alias: {
           '@': path.resolve(__dirname, '.'),
         }
+      },
+      build: {
+        rollupOptions: {
+          external: [
+            // Исключаем серверные файлы из браузерной сборки
+            'server/utils/subscribers.ts',
+            'server/utils/bot-handler.ts',
+            'server/config/telegram.ts',
+            'server/telegram-server.js',
+            'server/scripts/setup-bot.js'
+          ]
+        }
       }
     };
 });

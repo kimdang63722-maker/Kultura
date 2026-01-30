@@ -43,7 +43,7 @@ export const handleTelegramUpdate = async (update: TelegramUpdate): Promise<void
       await handleStopCommand(chatId, user);
     }
     // Обработка команды /stats (только для администратора)
-    else if (text === '/stats' && TELEGRAM_CONFIG.chatIds.includes(chatId)) {
+    else if (text === '/stats' && TELEGRAM_CONFIG.adminChatIds.includes(chatId)) {
       await handleStatsCommand(chatId);
     }
   } catch (error) {
