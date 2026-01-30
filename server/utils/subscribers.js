@@ -1,25 +1,18 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-interface Subscriber {
-  chatId: string;
-  username?: string;
-  firstName?: string;
-  subscribedAt: string;
-}
-
 // Путь к файлу с подписчиками
 const SUBSCRIBERS_FILE = path.join(process.cwd(), 'subscribers.json');
 
 // Инициализация файла подписчиков, если он не существует
-const initializeSubscribersFile = (): void => {
+const initializeSubscribersFile = () => {
   if (!fs.existsSync(SUBSCRIBERS_FILE)) {
     fs.writeFileSync(SUBSCRIBERS_FILE, JSON.stringify([], null, 2));
   }
 };
 
 // Получение всех подписчиков
-export const getSubscribers = (): Subscriber[] => {
+export const getSubscribers = () => {
   try {
     initializeSubscribersFile();
     const data = fs.readFileSync(SUBSCRIBERS_FILE, 'utf-8');
@@ -31,7 +24,7 @@ export const getSubscribers = (): Subscriber[] => {
 };
 
 // Добавление нового подписчика
-export const addSubscriber = (subscriber: Omit<Subscriber, 'subscribedAt'>): boolean => {
+export const addSubscriber = (subscriber) => {
   try {
     const subscribers = getSubscribers();
 
@@ -42,7 +35,7 @@ export const addSubscriber = (subscriber: Omit<Subscriber, 'subscribedAt'>): boo
     }
 
     // Добавляем нового подписчика
-    const newSubscriber: Subscriber = {
+    const newSubscriber = {
       ...subscriber,
       subscribedAt: new Date().toISOString()
     };
@@ -57,13 +50,13 @@ export const addSubscriber = (subscriber: Omit<Subscriber, 'subscribedAt'>): boo
 };
 
 // Получение всех chat IDs для отправки уведомлений
-export const getSubscriberChatIds = (): string[] => {
+export const getSubscriberChatIds = () => {
   const subscribers = getSubscribers();
   return subscribers.map(s => s.chatId);
 };
 
 // Удаление подписчика (опционально, для отписки)
-export const removeSubscriber = (chatId: string): boolean => {
+export const removeSubscriber = (chatId) => {
   try {
     const subscribers = getSubscribers();
     const filteredSubscribers = subscribers.filter(s => s.chatId !== chatId);

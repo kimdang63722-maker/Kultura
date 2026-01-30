@@ -138,10 +138,10 @@ src/                    # Клиентский код (React)
 
 server/                 # Серверный код (Node.js)
 ├── config/
-│   └── telegram.ts          # Серверные настройки с токеном
+│   └── telegram.js          # Серверные настройки с токеном
 ├── utils/
-│   ├── bot-handler.ts       # Обработка команд бота
-│   └── subscribers.ts       # Управление подписчиками
+│   ├── bot-handler.js       # Обработка команд бота
+│   └── subscribers.js       # Управление подписчиками
 ├── scripts/
 │   └── setup-bot.js         # Настройка webhook
 └── telegram-server.js       # HTTP сервер для webhook

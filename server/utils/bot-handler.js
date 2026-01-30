@@ -1,27 +1,8 @@
-import { TELEGRAM_CONFIG } from '../config/telegram';
-import { addSubscriber, removeSubscriber } from './subscribers';
-
-interface TelegramUpdate {
-  update_id: number;
-  message?: {
-    message_id: number;
-    from: {
-      id: number;
-      is_bot: boolean;
-      first_name?: string;
-      username?: string;
-    };
-    chat: {
-      id: number;
-      type: string;
-    };
-    date: number;
-    text?: string;
-  };
-}
+import { TELEGRAM_CONFIG } from '../config/telegram.js';
+import { addSubscriber, removeSubscriber } from './subscribers.js';
 
 // Обработка входящего обновления от Telegram
-export const handleTelegramUpdate = async (update: TelegramUpdate): Promise<void> => {
+export const handleTelegramUpdate = async (update) => {
   try {
     if (!update.message) {
       return; // Пропускаем обновления без сообщений
@@ -52,7 +33,7 @@ export const handleTelegramUpdate = async (update: TelegramUpdate): Promise<void
 };
 
 // Обработка команды /start
-const handleStartCommand = async (chatId: string, user: any): Promise<void> => {
+const handleStartCommand = async (chatId, user) => {
   try {
     // Добавляем пользователя в список подписчиков
     const success = addSubscriber({
@@ -84,7 +65,7 @@ const handleStartCommand = async (chatId: string, user: any): Promise<void> => {
 };
 
 // Обработка команды /stop
-const handleStopCommand = async (chatId: string, user: any): Promise<void> => {
+const handleStopCommand = async (chatId, user) => {
   try {
     const success = removeSubscriber(chatId);
 
@@ -106,9 +87,9 @@ const handleStopCommand = async (chatId: string, user: any): Promise<void> => {
 };
 
 // Обработка команды /stats
-const handleStatsCommand = async (chatId: string): Promise<void> => {
+const handleStatsCommand = async (chatId) => {
   try {
-    const { getSubscriberStats, getSubscribers } = await import('./subscribers');
+    const { getSubscriberStats, getSubscribers } = await import('./subscribers.js');
     const stats = getSubscriberStats();
     const subscribers = getSubscribers();
 
@@ -130,7 +111,7 @@ ${subscribers.map((s, i) =>
 };
 
 // Отправка сообщения пользователю
-const sendMessage = async (chatId: string, text: string): Promise<boolean> => {
+const sendMessage = async (chatId, text) => {
   try {
     const url = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`;
 
@@ -159,7 +140,7 @@ const sendMessage = async (chatId: string, text: string): Promise<boolean> => {
 };
 
 // Установка webhook для бота
-export const setWebhook = async (webhookUrl: string): Promise<boolean> => {
+export const setWebhook = async (webhookUrl) => {
   try {
     const url = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/setWebhook`;
 
@@ -189,7 +170,7 @@ export const setWebhook = async (webhookUrl: string): Promise<boolean> => {
 };
 
 // Удаление webhook
-export const deleteWebhook = async (): Promise<boolean> => {
+export const deleteWebhook = async () => {
   try {
     const url = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/deleteWebhook`;
 

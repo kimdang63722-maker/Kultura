@@ -26,12 +26,12 @@ const checkFile = (path) => {
 
 const filesToCheck = [
   'server/telegram-server.js',
-  'server/utils/bot-handler.ts',
-  'server/utils/subscribers.ts',
-  'server/config/telegram.ts',
+  'server/utils/bot-handler.js',
+  'server/utils/subscribers.js',
+  'server/config/telegram.js',
   'server/scripts/setup-bot.js',
-  'src/utils/telegram.ts',
-  'src/config/telegram.ts'
+  'src/utils/telegram.js',
+  'src/config/telegram.js'
 ];
 
 let allFilesExist = true;
