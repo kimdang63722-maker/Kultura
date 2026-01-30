@@ -101,30 +101,54 @@ const formatMessage = (data: TelegramFormData): string => {
   return message;
 };
 
-// Отправка сообщения в Telegram
+// Отправка сообщения в Telegram всем подписчикам
 export const sendToTelegram = async (data: TelegramFormData): Promise<boolean> => {
   try {
     const message = formatMessage(data);
+    
+    // 1. Получаем список ID из конфига
+    let chatIds = [...TELEGRAM_CONFIG.chatIds];
+
+    try {
+      // 2. Пытаемся динамически получить ID тех, кто нажал "Старт" (через getUpdates)
+      // Это позволит боту "узнать" новых пользователей без ручного добавления ID в код.
+      const updatesUrl = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/getUpdates`;
+      const updatesRes = await fetch(updatesUrl);
+      if (updatesRes.ok) {
+        const updates = await updatesRes.json();
+        if (updates.ok && updates.result) {
+          updates.result.forEach((update: any) => {
+            const chatId = update.message?.chat?.id?.toString();
+            if (chatId && !chatIds.includes(chatId)) {
+              chatIds.push(chatId);
+            }
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('Could not fetch dynamic updates from Telegram:', e);
+    }
+    
     const url = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`;
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: TELEGRAM_CONFIG.chatId,
-        text: message,
-        parse_mode: 'HTML'
-      }),
-    });
+    const sendPromises = chatIds.map(chatId => 
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: 'HTML'
+        }),
+      })
+    );
 
-    if (!response.ok) {
-      console.error('Telegram API error:', await response.text());
-      return false;
-    }
+    const results = await Promise.all(sendPromises);
+    const successCount = results.filter(res => res.ok).length;
 
-    return true;
+    return successCount > 0; // Возвращаем true, если хотя бы одному отправилось
   } catch (error) {
     console.error('Error sending to Telegram:', error);
     return false;
