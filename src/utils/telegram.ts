@@ -1,4 +1,5 @@
 import { TELEGRAM_CONFIG } from '../config/telegram';
+import { getSubscriberChatIds } from './subscribers';
 
 // Типы данных для разных форм
 export interface BaseFormData {
@@ -105,29 +106,14 @@ const formatMessage = (data: TelegramFormData): string => {
 export const sendToTelegram = async (data: TelegramFormData): Promise<boolean> => {
   try {
     const message = formatMessage(data);
-    
-    // 1. Получаем список ID из конфига
-    let chatIds = [...TELEGRAM_CONFIG.chatIds];
 
-    try {
-      // 2. Пытаемся динамически получить ID тех, кто нажал "Старт" (через getUpdates)
-      // Это позволит боту "узнать" новых пользователей без ручного добавления ID в код.
-      const updatesUrl = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/getUpdates`;
-      const updatesRes = await fetch(updatesUrl);
-      if (updatesRes.ok) {
-        const updates = await updatesRes.json();
-        if (updates.ok && updates.result) {
-          updates.result.forEach((update: any) => {
-            const chatId = update.message?.chat?.id?.toString();
-            if (chatId && !chatIds.includes(chatId)) {
-              chatIds.push(chatId);
-            }
-          });
-        }
-      }
-    } catch (e) {
-      console.warn('Could not fetch dynamic updates from Telegram:', e);
-    }
+    // 1. Получаем список ID подписчиков бота
+    let chatIds = getSubscriberChatIds();
+
+    // 2. Добавляем hardcoded ID из конфига (для администраторов и каналов)
+    chatIds = [...new Set([...chatIds, ...TELEGRAM_CONFIG.chatIds])];
+
+    console.log(`Sending notification to ${chatIds.length} recipients`);
     
     const url = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`;
 
